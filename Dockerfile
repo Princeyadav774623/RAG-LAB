@@ -15,9 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
-# Copy only requirements first to cache the layer
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install torch --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
