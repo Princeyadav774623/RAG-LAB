@@ -33,7 +33,6 @@ share/python-wheels/
 # Temporary files / App specific
 temp_uploads/
 *.pdf
-*.txt
 *.sqlite3
 
 # IDEs and OS
