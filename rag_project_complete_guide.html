@@ -1,0 +1,325 @@
+
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; }
+.section { margin-bottom: 1.5rem; }
+.sec-head { font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-text-tertiary); margin: 0 0 10px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+.card-accent { border-left: 3px solid; border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0; }
+.card-purple { border-left-color: #7F77DD; }
+.card-teal { border-left-color: #1D9E75; }
+.card-coral { border-left-color: #D85A30; }
+.card-blue { border-left-color: #378ADD; }
+.card-amber { border-left-color: #EF9F27; }
+.card-green { border-left-color: #639922; }
+.card-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 4px; }
+.card-sub { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 10px; line-height: 1.6; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 12px; padding: 3px 9px; border-radius: var(--border-radius-md); }
+.t-purple { background:#EEEDFE; color:#3C3489; }
+.t-teal { background:#E1F5EE; color:#085041; }
+.t-coral { background:#FAECE7; color:#4A1B0C; }
+.t-blue { background:#E6F1FB; color:#0C447C; }
+.t-amber { background:#FAEEDA; color:#412402; }
+.t-green { background:#EAF3DE; color:#27500A; }
+.t-gray { background:var(--color-background-secondary); color:var(--color-text-secondary); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.step-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.step-row:last-child { border-bottom: none; }
+.step-num { font-size: 12px; font-weight: 500; color: var(--color-text-info); background: var(--color-background-info); border-radius: var(--border-radius-md); padding: 2px 9px; white-space: nowrap; margin-top: 2px; min-width: 52px; text-align: center; }
+.step-body { flex: 1; }
+.step-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 2px; }
+.step-desc { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 6px; line-height: 1.5; }
+.metric-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; }
+.metric-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+.metric-label { font-size: 12px; color: var(--color-text-secondary); margin: 2px 0 0; }
+.warn-box { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 10px 14px; }
+.warn-text { font-size: 13px; color: #412402; margin: 0; line-height: 1.6; }
+.resume-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.resume-row:last-child { border-bottom: none; }
+.resume-icon { color: var(--color-text-success); font-size: 16px; margin-top: 1px; }
+.resume-text { font-size: 13.5px; color: var(--color-text-primary); line-height: 1.55; margin: 0; }
+.arch-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px; text-align: center; }
+.arch-arrow { color: var(--color-text-tertiary); font-size: 18px; display: flex; align-items: center; justify-content: center; }
+.arch-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); margin: 0; }
+.arch-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 4px 0 0; }
+.flow { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: 10px 0; }
+.flow-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 5px 10px; font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.flow-arr { color: var(--color-text-tertiary); font-size: 14px; }
+.pill-hot { background:#FAECE7; color:#993C1D; font-size:11px; font-weight:500; padding:2px 9px; border-radius:999px; }
+</style>
+
+<h2 class="sr-only">Complete guide to building a RAG-powered Document Q&A system for your AI engineer portfolio</h2>
+
+<div style="padding: 0.5rem 0 0;">
+
+  <!-- WHAT IS IT -->
+  <div class="section">
+    <p class="sec-head">What is this project</p>
+    <div class="card" style="border-left: 3px solid #7F77DD; border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;">
+      <p class="card-title">RAG-powered document Q&A system <span class="pill-hot" style="margin-left:8px;">Most demanded in 2026</span></p>
+      <p class="card-sub">You build a system where a user uploads real documents (PDFs, manuals, reports) and asks natural language questions. Instead of the LLM hallucinating from memory, it retrieves relevant chunks from your documents first, then answers using that context. This is exactly how enterprise AI assistants, support bots, and internal knowledge tools work in production.</p>
+      <div class="tag-row">
+        <span class="tag t-purple">NLP</span>
+        <span class="tag t-blue">Vector Search</span>
+        <span class="tag t-teal">LLM Integration</span>
+        <span class="tag t-coral">API deployment</span>
+        <span class="tag t-gray">End-to-end AI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHY IT MATTERS -->
+  <div class="section">
+    <p class="sec-head">Why this project gets you shortlisted</p>
+    <div class="grid2">
+      <div class="metric-card">
+        <p class="metric-val">84%</p>
+        <p class="metric-label">of production AI assistants use RAG or retrieval-based workflows in 2026</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-val">35% CAGR</p>
+        <p class="metric-label">RAG market growth — $1.96B (2025) → $40.34B projected by 2035</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-val">Day 1</p>
+        <p class="metric-label">You become immediately productive — most enterprise AI projects are RAG apps</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-val">#1 skill</p>
+        <p class="metric-label">Listed in GenAI job descriptions across fintech, healthcare, SaaS & enterprise</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIPELINE ARCHITECTURE -->
+  <div class="section">
+    <p class="sec-head">Pipeline architecture (how it works)</p>
+    <div class="card">
+      <p style="font-size:12px; color:var(--color-text-tertiary); margin:0 0 10px;">Two pipelines: Offline (Indexing) + Online (Querying)</p>
+      <p style="font-size:12px; font-weight:500; color:var(--color-text-secondary); margin:0 0 6px;">Indexing pipeline (runs once / on new docs)</p>
+      <div class="flow" style="margin-bottom:14px;">
+        <div class="flow-box">Raw docs (PDF/TXT)</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">Chunking</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">Embedding model</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">Vector DB</div>
+      </div>
+      <p style="font-size:12px; font-weight:500; color:var(--color-text-secondary); margin:0 0 6px;">Query pipeline (runs on every user question)</p>
+      <div class="flow">
+        <div class="flow-box">User query</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">Embed query</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">Retrieve top-k chunks</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">Rerank</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">LLM generates answer</div>
+        <span class="flow-arr">→</span>
+        <div class="flow-box">Response + citations</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section">
+    <p class="sec-head">Tech stack (pick one from each layer)</p>
+    <div class="card">
+      <div class="step-row">
+        <span class="step-num">Orchestration</span>
+        <div class="step-body">
+          <p class="step-title">LangChain or LlamaIndex</p>
+          <p class="step-desc">LangChain is more flexible; LlamaIndex is stronger for document-heavy RAG. Pick one and stick with it.</p>
+          <div class="tag-row"><span class="tag t-purple">LangChain</span><span class="tag t-purple">LlamaIndex</span></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">LLM</span>
+        <div class="step-body">
+          <p class="step-title">OpenAI GPT-4o / Claude / Gemini</p>
+          <p class="step-desc">GPT-4o is the most recognized by recruiters. Claude is excellent for long-context retrieval. Both via API.</p>
+          <div class="tag-row"><span class="tag t-blue">OpenAI API</span><span class="tag t-teal">Claude API</span><span class="tag t-green">Gemini</span></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Embeddings</span>
+        <div class="step-body">
+          <p class="step-title">text-embedding-3-small / sentence-transformers</p>
+          <p class="step-desc">OpenAI embeddings are easiest to start. For open-source, use BAAI/bge-small or all-MiniLM via HuggingFace.</p>
+          <div class="tag-row"><span class="tag t-blue">OpenAI embeddings</span><span class="tag t-green">sentence-transformers</span></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Vector DB</span>
+        <div class="step-body">
+          <p class="step-title">FAISS (prototype) → Pinecone or Chroma (production)</p>
+          <p class="step-desc">Start with FAISS locally. Migrate to Pinecone (managed) or Chroma (local persistent) for the final demo.</p>
+          <div class="tag-row"><span class="tag t-amber">FAISS</span><span class="tag t-coral">Pinecone</span><span class="tag t-teal">Chroma</span><span class="tag t-gray">Qdrant</span></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Reranking</span>
+        <div class="step-body">
+          <p class="step-title">Cohere Rerank or cross-encoders</p>
+          <p class="step-desc">This is what separates a tutorial RAG from a production RAG. Cohere Rerank is plug-and-play with a free tier.</p>
+          <div class="tag-row"><span class="tag t-blue">Cohere Rerank</span><span class="tag t-purple">BGE Reranker</span></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Frontend / API</span>
+        <div class="step-body">
+          <p class="step-title">Streamlit or FastAPI + Gradio</p>
+          <p class="step-desc">Streamlit gives you a live demo in 30 minutes. Add FastAPI for a proper REST endpoint to show deployment skills.</p>
+          <div class="tag-row"><span class="tag t-teal">Streamlit</span><span class="tag t-coral">FastAPI</span><span class="tag t-green">Gradio</span></div>
+        </div>
+      </div>
+      <div class="step-row" style="border-bottom:none;">
+        <span class="step-num">Evaluation</span>
+        <div class="step-body">
+          <p class="step-title">RAGAS or DeepEval</p>
+          <p class="step-desc">This is critical in 2026. Evaluating faithfulness, context recall, and answer relevance proves you engineer AI, not just use it.</p>
+          <div class="tag-row"><span class="tag t-purple">RAGAS</span><span class="tag t-amber">DeepEval</span><span class="tag t-gray">TruLens</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD STEPS -->
+  <div class="section">
+    <p class="sec-head">Step-by-step build plan</p>
+    <div class="card">
+      <div class="step-row">
+        <span class="step-num">Step 1</span>
+        <div class="step-body">
+          <p class="step-title">Pick a real document corpus</p>
+          <p class="step-desc">Use actual PDFs — company annual reports, medical guidelines, legal docs, or research papers. Real data makes your demo 10x more convincing than lorem ipsum.</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Step 2</span>
+        <div class="step-body">
+          <p class="step-title">Build the ingestion pipeline</p>
+          <p class="step-desc">Load docs with PyPDF2 or pdfplumber → chunk with RecursiveCharacterTextSplitter (chunk size 512, overlap 50) → embed and store in Chroma or FAISS. Bad chunking destroys context — this is where most people fail.</p>
+          <div class="tag-row" style="margin-top:6px;"><span class="tag t-gray">PyPDF2</span><span class="tag t-gray">LangChain splitters</span></div>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Step 3</span>
+        <div class="step-body">
+          <p class="step-title">Build hybrid retrieval</p>
+          <p class="step-desc">Combine dense vector search (semantic) with sparse BM25 (keyword). Merge results using Reciprocal Rank Fusion. This is what makes your system feel production-ready vs a demo.</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Step 4</span>
+        <div class="step-body">
+          <p class="step-title">Add reranking</p>
+          <p class="step-desc">Pass retrieved chunks through Cohere Rerank or a cross-encoder. Retrieval quality is the #1 bottleneck — pure vector search returns irrelevant chunks 30–40% of the time.</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Step 5</span>
+        <div class="step-body">
+          <p class="step-title">Prompt + generate with citations</p>
+          <p class="step-desc">Build a prompt template that forces the LLM to answer only from retrieved chunks. Make it return inline citations (e.g. "[Source: Report.pdf, p.12]"). This prevents hallucination and looks professional.</p>
+        </div>
+      </div>
+      <div class="step-row">
+        <span class="step-num">Step 6</span>
+        <div class="step-body">
+          <p class="step-title">Add evaluation with RAGAS</p>
+          <p class="step-desc">Create 20–30 test QA pairs and run RAGAS metrics: faithfulness, answer relevancy, context recall. Report these numbers in your README. This is what shows you think like an engineer, not a tutorial follower.</p>
+        </div>
+      </div>
+      <div class="step-row" style="border-bottom:none;">
+        <span class="step-num">Step 7</span>
+        <div class="step-body">
+          <p class="step-title">Deploy and make it live</p>
+          <p class="step-desc">Deploy on Streamlit Cloud (free) or Hugging Face Spaces (free). Add a FastAPI wrapper for the backend. Your GitHub README must link to a live demo — recruiters won't clone and run locally.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMON MISTAKES -->
+  <div class="section">
+    <p class="sec-head">Mistakes that kill the project's impact</p>
+    <div class="warn-box">
+      <p class="warn-text">
+        <i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:6px;"></i>
+        <strong>No evaluation</strong> — if you can't prove your RAG is accurate, it's just a demo. Add RAGAS scores.<br><br>
+        <i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:6px;"></i>
+        <strong>Poor chunking</strong> — fixed-size splits breaking mid-sentence destroy retrieval quality.<br><br>
+        <i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:6px;"></i>
+        <strong>Only vector search</strong> — pure semantic search misses exact keywords. Use hybrid retrieval.<br><br>
+        <i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:6px;"></i>
+        <strong>No live demo link</strong> — recruiters will not clone your repo. Deploy it or it doesn't exist.<br><br>
+        <i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:6px;"></i>
+        <strong>Generic data</strong> — "Chat with Wikipedia" is ignored. Use a specific domain (legal, medical, finance).
+      </p>
+    </div>
+  </div>
+
+  <!-- RESUME BULLETS -->
+  <div class="section">
+    <p class="sec-head">How to write it on your resume</p>
+    <div class="card">
+      <div class="resume-row">
+        <i class="ti ti-circle-check resume-icon" aria-hidden="true"></i>
+        <p class="resume-text">Built an end-to-end RAG pipeline over 500+ legal PDFs using LangChain, Chroma, and GPT-4o — achieving 89% faithfulness score on RAGAS evaluation</p>
+      </div>
+      <div class="resume-row">
+        <i class="ti ti-circle-check resume-icon" aria-hidden="true"></i>
+        <p class="resume-text">Implemented hybrid retrieval (dense + BM25) with Cohere reranking, reducing irrelevant chunk retrieval by ~35% vs baseline vector search</p>
+      </div>
+      <div class="resume-row">
+        <i class="ti ti-circle-check resume-icon" aria-hidden="true"></i>
+        <p class="resume-text">Deployed on Streamlit Cloud with a FastAPI backend; live demo served 200+ queries during testing with average latency under 3s</p>
+      </div>
+      <div class="resume-row" style="border-bottom:none;">
+        <i class="ti ti-circle-check resume-icon" aria-hidden="true"></i>
+        <p class="resume-text">Skills demonstrated: embeddings, semantic search, prompt engineering, vector databases, API deployment, evaluation frameworks</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPGRADE PATH -->
+  <div class="section">
+    <p class="sec-head">How to level up the project (for senior roles)</p>
+    <div class="grid3">
+      <div class="card" style="padding: 10px 12px;">
+        <p style="font-size:13px; font-weight:500; color:var(--color-text-primary); margin:0 0 3px;"><i class="ti ti-brain" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:5px;"></i>Agentic RAG</p>
+        <p style="font-size:12px; color:var(--color-text-secondary); margin:0;">LLM decides which tool to call — search, summarize, or retrieve — autonomously</p>
+      </div>
+      <div class="card" style="padding: 10px 12px;">
+        <p style="font-size:13px; font-weight:500; color:var(--color-text-primary); margin:0 0 3px;"><i class="ti ti-chart-dots" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:5px;"></i>GraphRAG</p>
+        <p style="font-size:12px; color:var(--color-text-secondary); margin:0;">Use a knowledge graph for structured relationship retrieval, not just flat vector search</p>
+      </div>
+      <div class="card" style="padding: 10px 12px;">
+        <p style="font-size:13px; font-weight:500; color:var(--color-text-primary); margin:0 0 3px;"><i class="ti ti-photo" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:5px;"></i>Multimodal RAG</p>
+        <p style="font-size:12px; color:var(--color-text-secondary); margin:0;">Retrieve over images + text combined (tables, charts, scanned docs)</p>
+      </div>
+      <div class="card" style="padding: 10px 12px;">
+        <p style="font-size:13px; font-weight:500; color:var(--color-text-primary); margin:0 0 3px;"><i class="ti ti-shield" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:5px;"></i>Security layer</p>
+        <p style="font-size:12px; color:var(--color-text-secondary); margin:0;">Add access control — users only retrieve docs they're authorized to see</p>
+      </div>
+      <div class="card" style="padding: 10px 12px;">
+        <p style="font-size:13px; font-weight:500; color:var(--color-text-primary); margin:0 0 3px;"><i class="ti ti-activity" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:5px;"></i>Monitoring</p>
+        <p style="font-size:12px; color:var(--color-text-secondary); margin:0;">Add LangSmith or TruLens tracing to catch hallucinations in real time</p>
+      </div>
+      <div class="card" style="padding: 10px 12px;">
+        <p style="font-size:13px; font-weight:500; color:var(--color-text-primary); margin:0 0 3px;"><i class="ti ti-database" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:5px;"></i>Streaming ingestion</p>
+        <p style="font-size:12px; color:var(--color-text-secondary); margin:0;">Re-index new docs automatically when the source updates (real-time knowledge base)</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:12px 16px; margin-top:4px;">
+    <p style="font-size:13px; color:var(--color-text-secondary); margin:0; line-height:1.6;"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:5px;"></i>The era of "vibe-based" AI development is over. Companies in 2026 want to see evaluation frameworks that prove your RAG works — not just a demo that looks good.</p>
+  </div>
+
+</div>

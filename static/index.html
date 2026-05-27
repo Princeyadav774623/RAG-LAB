@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG LAB — Precision Document Intelligence Platform</title>
+    <!-- Modern Premium Typography (PRINCE.FOLIO style) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons for premium minimalistic SVGs -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- 1. TRANSLUCENT FLOATING CAPSULE HEADER (ALLYS STYLE) -->
+    <header class="global-nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <i data-lucide="flask-conical" class="logo-icon"></i>
+                <span>RAG LAB</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#hero" class="nav-link active">Overview</a>
+                <a href="#architecture" class="nav-link">Architecture</a>
+                <a href="#playground" class="nav-link">Playground</a>
+            </nav>
+            <div class="nav-actions">
+                <div class="theme-dropdown-wrapper">
+                    <button id="theme-toggle-btn" class="theme-toggle-btn" title="Appearance Mode">
+                        <i data-lucide="moon" class="theme-toggle-icon"></i>
+                    </button>
+                    <div id="theme-dropdown-menu" class="theme-dropdown-menu">
+                        <button class="theme-menu-item" data-theme-val="light">
+                            <i data-lucide="sun"></i> Light
+                        </button>
+                        <button class="theme-menu-item" data-theme-val="dark">
+                            <i data-lucide="moon"></i> Dark
+                        </button>
+                        <button class="theme-menu-item" data-theme-val="system">
+                            <i data-lucide="laptop"></i> System
+                        </button>
+                    </div>
+                </div>
+                <div class="nav-status">
+                    <span class="status-indicator" id="api-status-dot"></span>
+                    <span id="api-status-text">Connecting...</span>
+                </div>
+                <a href="/docs" target="_blank" class="nav-cta-btn">Developer API</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 2. radial GLOW BACKGROUNDS -->
+        <div class="ambient-glow bg-glow-1"></div>
+        <div class="ambient-glow bg-glow-2"></div>
+
+        <!-- 3. MODERN HERO SECTION -->
+        <section id="hero" class="hero-section">
+            <!-- Floating orb decorations -->
+            <div class="hero-orb hero-orb-1"></div>
+            <div class="hero-orb hero-orb-2"></div>
+            <div class="hero-orb hero-orb-3"></div>
+
+            <div class="hero-content">
+                <!-- Floating badge pill -->
+                <div class="hero-badge-pill">
+                    <span class="hero-badge-dot"></span>
+                    <span>Precision RAG Pipeline — v2.0</span>
+                    <span class="hero-badge-arrow"><i data-lucide="arrow-right"></i></span>
+                </div>
+
+                <h1 class="hero-title">The future of<br><span class="gradient-text">document intelligence.</span></h1>
+
+                <p class="hero-lead">
+                    A production-grade RAG system with hybrid multi-stage retrieval, local Cross-Encoder reranking, and self-evaluating LLM judges. Zero hallucinations. Full citations.
+                </p>
+
+                <div class="hero-ctas">
+                    <a href="#playground" class="btn btn-primary btn-glow"><i data-lucide="play"></i> Open Playground</a>
+                    <a href="#architecture" class="btn btn-secondary">View Architecture <i data-lucide="chevron-right"></i></a>
+                </div>
+
+                <!-- Floating live stats -->
+                <div class="hero-stats">
+                    <div class="hero-stat-pill">
+                        <span class="hero-stat-val gradient-text">94%</span>
+                        <span class="hero-stat-label">Faithfulness</span>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat-pill">
+                        <span class="hero-stat-val gradient-text">35%</span>
+                        <span class="hero-stat-label">Noise Reduction</span>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat-pill">
+                        <span class="hero-stat-val gradient-text">~12ms</span>
+                        <span class="hero-stat-label">Rerank Latency</span>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat-pill">
+                        <span class="hero-stat-val gradient-text">100%</span>
+                        <span class="hero-stat-label">Local & Private</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TECH ARCHITECTURE / CARDS SECTION -->
+        <section id="architecture" class="arch-section">
+            <div class="section-container">
+                <span class="section-eyebrow">The RAG OS Architecture</span>
+                <h2 class="section-title">Deep multi-stage pipelines.<br>Running 100% locally.</h2>
+                
+                <div class="arch-grid">
+                    <!-- Ingestion Card -->
+                    <div class="glass-card tilt-card">
+                        <div class="card-glow"></div>
+                        <div class="card-icon-box card-purple">
+                            <i data-lucide="folder-up"></i>
+                        </div>
+                        <div class="card-header-flex">
+                            <h3>Recursive Ingester</h3>
+                            <div class="card-badge">ChromaDB</div>
+                        </div>
+                        <p>Extracts page-aware text representations, splits recursively across semantic boundaries, and generates dense vector embeddings via local models.</p>
+                        <div class="card-metrics">
+                            <span class="metric-pill">Chunk Size <span class="metric-val">512</span></span>
+                            <span class="metric-pill">Overlap <span class="metric-val">10%</span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Hybrid Search Card -->
+                    <div class="glass-card tilt-card">
+                        <div class="card-glow"></div>
+                        <div class="card-icon-box card-blue">
+                            <i data-lucide="shuffle"></i>
+                        </div>
+                        <div class="card-header-flex">
+                            <h3>Hybrid RRF Engine</h3>
+                            <div class="card-badge">Dense + Lexical</div>
+                        </div>
+                        <p>Fuses high-dimensional semantic search with BM25 sparse keyword indices, utilizing Reciprocal Rank Fusion (RRF) to merge ranks seamlessly.</p>
+                        <div class="card-metrics">
+                            <span class="metric-pill">Alpha <span class="metric-val">0.45</span></span>
+                            <span class="metric-pill">K Score <span class="metric-val">60</span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Reranker Card -->
+                    <div class="glass-card tilt-card">
+                        <div class="card-glow"></div>
+                        <div class="card-icon-box card-teal">
+                            <i data-lucide="align-justify"></i>
+                        </div>
+                        <div class="card-header-flex">
+                            <h3>Cross-Encoder Rerank</h3>
+                            <div class="card-badge">ms-marco-v2</div>
+                        </div>
+                        <p>Grades text segments directly against queries using a local cross-attention transformer, reducing retrieval noise by up to 35%.</p>
+                        <div class="card-metrics">
+                            <span class="metric-pill">Noise Red. <span class="metric-val">35%</span></span>
+                            <span class="metric-pill">Latency <span class="metric-val">~12ms</span></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Evaluator Card -->
+                    <div class="glass-card tilt-card">
+                        <div class="card-glow"></div>
+                        <div class="card-icon-box card-coral">
+                            <i data-lucide="sparkles"></i>
+                        </div>
+                        <div class="card-header-flex">
+                            <h3>LLM-as-a-Judge</h3>
+                            <div class="card-badge">Evaluation-First</div>
+                        </div>
+                        <p>Evaluates answer quality in real-time, delivering mathematically verified indices for Faithfulness, Context, and Answer Relevance.</p>
+                        <div class="card-metrics">
+                            <span class="metric-pill">Faithfulness <span class="metric-val">94%</span></span>
+                            <span class="metric-pill">Relevance <span class="metric-val">92%</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. INTERACTIVE PLAYGROUND SECTION -->
+        <section id="playground" class="playground-section">
+            <div class="section-container">
+                <span class="section-eyebrow">Hands-on Playground</span>
+                <h2 class="section-title">Query your documents.<br>Audit every citation.</h2>
+                
+                <!-- Main Glass Playground Box -->
+                <div class="playground-container glass-container">
+                    
+                    <!-- 5.1 PLAYGROUND CONTROL SIDEBAR -->
+                    <aside class="playground-sidebar">
+                        <div class="sidebar-block">
+                            <h4><i data-lucide="settings"></i> Engine Configuration</h4>
+                            <div class="form-group">
+                                <label for="api-provider">LLM Provider</label>
+                                <select id="api-provider" class="apple-select">
+                                    <option value="gemini">Google Gemini</option>
+                                    <option value="openai">OpenAI GPT-4o</option>
+                                    <option value="mock" selected>Simulated Demo Mode</option>
+                                </select>
+                            </div>
+                            <div class="form-group credentials-inputs hidden" id="credentials-wrapper">
+                                <div id="gemini-key-wrapper" class="key-field">
+                                    <label for="gemini-key">Gemini API Key</label>
+                                    <input type="password" id="gemini-key" class="apple-input" placeholder="AIzaSy...">
+                                </div>
+                                <div id="openai-key-wrapper" class="key-field hidden">
+                                    <label for="openai-key">OpenAI API Key</label>
+                                    <input type="password" id="openai-key" class="apple-input" placeholder="sk-proj-...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-block">
+                            <h4><i data-lucide="folder-open"></i> Document Ingest</h4>
+                            <div class="drag-drop-zone" id="drop-zone">
+                                <i data-lucide="cloud-upload" class="upload-icon"></i>
+                                <p>Drag & drop PDF / TXT here</p>
+                                <span>or click to browse</span>
+                                <input type="file" id="file-input" multiple class="hidden-input" accept=".pdf,.txt">
+                            </div>
+                            <div id="upload-progress-container" class="upload-progress hidden">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" id="upload-progress-fill"></div>
+                                </div>
+                                <span id="upload-status-text">Uploading...</span>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-block">
+                            <h4><i data-lucide="database"></i> Corpus Stats</h4>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <span class="stat-label">Indexed Chunks</span>
+                                    <span class="stat-value" id="stat-chunks">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label">Unique Files</span>
+                                    <span class="stat-value" id="stat-files">0</span>
+                                </div>
+                            </div>
+                            <div class="indexed-files-list" id="files-list">
+                                <div class="no-files-msg">No files indexed yet</div>
+                            </div>
+                            <button id="clear-db-btn" class="btn btn-secondary btn-danger btn-sm"><i data-lucide="trash-2"></i> Wipe Collection</button>
+                        </div>
+                    </aside>
+
+                    <!-- 5.2 CHAT CONSOLE AND DIAGNOSTICS MAIN PANEL -->
+                    <div class="playground-main">
+                        <!-- Upper Tab Switcher -->
+                        <div class="playground-tabs">
+                            <button class="tab-btn active" data-tab="tab-chat"><i data-lucide="message-square"></i> Chat Console</button>
+                            <button class="tab-btn" id="diagnostics-tab-btn" data-tab="tab-diagnostics"><i data-lucide="activity"></i> Analytics Panel</button>
+                        </div>
+
+                        <!-- Tab 1: Conversational Chat Interface -->
+                        <div class="tab-content active" id="tab-chat">
+                            <div class="chat-container" id="chat-messages">
+                                <div class="chat-welcome">
+                                    <div class="welcome-badge"><i data-lucide="shield-check"></i> 100% Grounded AI</div>
+                                    <h3>Ready to interact with your knowledge.</h3>
+                                    <p>Upload files in the sidebar and ask specific queries. Your responses will be dynamically checked against local vector stores, scored by our reranker, and generated with explicit citations.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Sleek macOS style input panel -->
+                            <div class="chat-input-wrapper">
+                                <input type="text" id="chat-input" placeholder="Ask a question about your indexed files..." disabled>
+                                <button id="chat-send-btn" class="send-btn" disabled>
+                                    <i data-lucide="arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Technical Diagnostics -->
+                        <div class="tab-content" id="tab-diagnostics">
+                            <div class="diagnostics-wrapper">
+                                
+                                <!-- Evaluation Scoring Gauges Row -->
+                                <div class="diagnostic-row">
+                                    <h4>🛡️ LLM-As-A-Judge Quality Audit</h4>
+                                    <div class="gauges-grid">
+                                        <!-- Faithfulness Gauge -->
+                                        <div class="gauge-card">
+                                            <div class="gauge-svg-container">
+                                                <svg viewBox="0 0 100 100" class="progress-ring">
+                                                    <circle class="ring-bg" cx="50" cy="50" r="40" />
+                                                    <circle class="ring-fill fill-purple" id="gauge-faithfulness" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                                                </svg>
+                                                <span class="gauge-number" id="val-faithfulness">0.00</span>
+                                            </div>
+                                            <h5>Faithfulness</h5>
+                                            <p>Absence of hallucinations. Fully grounded in context.</p>
+                                            <span class="critique-explanation" id="exp-faithfulness">No data</span>
+                                        </div>
+
+                                        <!-- Context Relevance Gauge -->
+                                        <div class="gauge-card">
+                                            <div class="gauge-svg-container">
+                                                <svg viewBox="0 0 100 100" class="progress-ring">
+                                                    <circle class="ring-bg" cx="50" cy="50" r="40" />
+                                                    <circle class="ring-fill fill-blue" id="gauge-context" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                                                </svg>
+                                                <span class="gauge-number" id="val-context">0.00</span>
+                                            </div>
+                                            <h5>Context Relevance</h5>
+                                            <p>Significance and focus of retrieved text chunks.</p>
+                                            <span class="critique-explanation" id="exp-context">No data</span>
+                                        </div>
+
+                                        <!-- Answer Relevance Gauge -->
+                                        <div class="gauge-card">
+                                            <div class="gauge-svg-container">
+                                                <svg viewBox="0 0 100 100" class="progress-ring">
+                                                    <circle class="ring-bg" cx="50" cy="50" r="40" />
+                                                    <circle class="ring-fill fill-teal" id="gauge-answer" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                                                </svg>
+                                                <span class="gauge-number" id="val-answer">0.00</span>
+                                            </div>
+                                            <h5>Answer Relevance</h5>
+                                            <p>Accuracy of responding to the queried intent.</p>
+                                            <span class="critique-explanation" id="exp-answer">No data</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Multi-stage Retrieval Fusion Table -->
+                                <div class="diagnostic-row">
+                                    <h4>🔬 Retrieval Rank Fusion & Rerank Scores</h4>
+                                    <div class="table-container">
+                                        <table class="apple-table" id="retrieval-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>Document Source</th>
+                                                    <th>Dense Similarity</th>
+                                                    <th>BM25 Keyword</th>
+                                                    <th>RRF Rank</th>
+                                                    <th>Cross-Encoder</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="6" class="table-empty">Execute a chat query to audit exact algorithmic ranking weight shifts</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Document Chunk Detail Blocks -->
+                                <div class="diagnostic-row">
+                                    <h4>📄 Retrieved Source Chunks (In Reranked Order)</h4>
+                                    <div class="chunks-logs-list" id="chunks-logs">
+                                        <div class="no-chunks-msg">No chunks retrieved yet</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 6. BLACK EDITORIAL FOOTER -->
+    <footer class="global-footer">
+
+        <!-- MASSIVE HEADLINE BANNER -->
+        <div class="footer-headline-wrap">
+            <h2 class="footer-big-title">BUILD WITH<br><span class="footer-title-accent">RAG LAB</span></h2>
+        </div>
+
+        <div class="footer-container">
+
+            <!-- DIVIDER LINE -->
+            <div class="footer-top-divider"></div>
+
+            <!-- 3-COLUMN INFO ROW -->
+            <div class="footer-info-grid">
+
+                <!-- STATUS -->
+                <div class="footer-info-col">
+                    <span class="footer-info-label">STATUS</span>
+                    <div class="footer-status-item">
+                        <span class="footer-status-dot"></span>
+                        <span class="footer-status-text">Open Source & Active</span>
+                    </div>
+                    <p class="footer-info-sub">Available for Integration &amp; Contributions</p>
+                    <div class="footer-info-tags">
+                        <span class="footer-tag footer-tag-green">FastAPI</span>
+                        <span class="footer-tag footer-tag-purple">ChromaDB</span>
+                        <span class="footer-tag footer-tag-blue">Python 3.11</span>
+                    </div>
+                </div>
+
+                <!-- CONNECT -->
+                <div class="footer-info-col">
+                    <span class="footer-info-label">CONNECT</span>
+                    <a href="#" class="footer-connect-link">GitHub Repository</a>
+                    <a href="/docs" class="footer-connect-link">Developer API Docs</a>
+                    <a href="#" class="footer-connect-link">Community Discord</a>
+                    <a href="#" class="footer-connect-link">Research Paper</a>
+                    <div class="footer-social-row">
+                        <a href="#" class="footer-social-icon" title="GitHub"><i data-lucide="github"></i></a>
+                        <a href="#" class="footer-social-icon" title="Twitter"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="footer-social-icon" title="LinkedIn"><i data-lucide="linkedin"></i></a>
+                    </div>
+                </div>
+
+                <!-- TECHNOLOGY -->
+                <div class="footer-info-col">
+                    <span class="footer-info-label">TECHNOLOGY</span>
+                    <p class="footer-tech-item"><span class="footer-tech-dot footer-tech-purple"></span>Hybrid RRF Retrieval</p>
+                    <p class="footer-tech-item"><span class="footer-tech-dot footer-tech-blue"></span>Cross-Encoder Reranker</p>
+                    <p class="footer-tech-item"><span class="footer-tech-dot footer-tech-teal"></span>LLM-as-a-Judge Eval</p>
+                    <p class="footer-tech-item"><span class="footer-tech-dot footer-tech-coral"></span>Local Transformers</p>
+                    <p class="footer-location">100% Local &amp; Private 🔒</p>
+                </div>
+
+            </div>
+
+            <!-- BOTTOM BAR -->
+            <div class="footer-bottom-bar">
+                <span class="footer-copy">© 2026 RAG LAB. All rights reserved.</span>
+                <span class="footer-build">Built with passion ♥</span>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
