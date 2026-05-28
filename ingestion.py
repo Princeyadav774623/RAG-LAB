@@ -5,7 +5,7 @@ from typing import List, Dict, Any, Optional
 import pypdf
 from pinecone import Pinecone, ServerlessSpec
 from supabase import create_client, Client
-from sentence_transformers import SentenceTransformer
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,12 +18,19 @@ class DocumentIngester:
         """
         self.index_name = index_name
         
+        # Initialize Gemini API for Embeddings
+        gemini_key = os.environ.get("GEMINI_API_KEY")
+        if gemini_key:
+            genai.configure(api_key=gemini_key)
+        else:
+            print("WARNING: GEMINI_API_KEY not set for embeddings")
+        
         # Initialize Pinecone
         pinecone_key = os.environ.get("PINECONE_API_KEY")
         if pinecone_key:
             self.pc = Pinecone(api_key=pinecone_key)
             
-            # Check if index exists, create if not (768 dims for BAAI/bge-base-en-v1.5)
+            # Check if index exists, create if not (768 dims for Gemini text-embedding-004)
             existing_indexes = [index_info["name"] for index_info in self.pc.list_indexes()]
             if self.index_name not in existing_indexes:
                 print(f"Creating Pinecone index '{self.index_name}'...")
@@ -47,9 +54,6 @@ class DocumentIngester:
         else:
             self.supabase = None
             print("WARNING: SUPABASE_URL and SUPABASE_KEY not set in .env")
-            
-        # Initialize the state-of-the-art embedding model locally (768 dimensions)
-        self.embedding_model = SentenceTransformer("BAAI/bge-base-en-v1.5")
 
     def load_pdf(self, file_path: str) -> List[Dict[str, Any]]:
         if not os.path.exists(file_path):
@@ -184,8 +188,19 @@ class DocumentIngester:
             
         texts = [chunk["text"] for chunk in chunks]
         
-        # Generate embeddings locally
-        embeddings = self.embedding_model.encode(texts, show_progress_bar=False).tolist()
+        # Generate embeddings via Gemini API
+        try:
+            embed_response = genai.embed_content(
+                model="models/text-embedding-004",
+                content=texts
+            )
+            embeddings = embed_response['embedding']
+            
+            # If the API returned a single dictionary (only 1 chunk) instead of a list, fix it
+            if not isinstance(embeddings[0], list):
+                embeddings = [embeddings]
+        except Exception as e:
+            raise Exception(f"Gemini API Embedding Error: {str(e)}")
         
         pinecone_vectors = []
         supabase_records = []

@@ -1,9 +1,9 @@
 import os
 from typing import List, Dict, Any
 import numpy as np
-from sentence_transformers import SentenceTransformer, CrossEncoder
 from pinecone import Pinecone
 from supabase import create_client, Client
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,11 +34,12 @@ class HybridRetriever:
         else:
             self.supabase = None
             
-        # Load local dense embedding model (matches ingestion)
-        self.embedding_model = SentenceTransformer(embedding_model_name)
-        
-        # Load local Cross-Encoder reranker model
-        self.reranker_model = CrossEncoder(reranker_model_name)
+        # Initialize Gemini API for Embeddings
+        gemini_key = os.environ.get("GEMINI_API_KEY")
+        if gemini_key:
+            genai.configure(api_key=gemini_key)
+        else:
+            print("WARNING: GEMINI_API_KEY not set for embeddings")
 
     def retrieve(
         self, 
@@ -50,8 +51,16 @@ class HybridRetriever:
         if not self.index or not self.supabase:
             return []
             
-        # 1. Dense Semantic Search (Pinecone)
-        query_embedding = self.embedding_model.encode(query).tolist()
+        # 1. Dense Semantic Search (Pinecone) via Gemini API
+        try:
+            embed_response = genai.embed_content(
+                model="models/text-embedding-004",
+                content=query
+            )
+            query_embedding = embed_response['embedding']
+        except Exception as e:
+            print(f"Gemini API Embedding Error: {e}")
+            return []
         
         dense_results = self.index.query(
             vector=query_embedding,
@@ -142,19 +151,10 @@ class HybridRetriever:
         if not merged_candidates:
             return []
             
-        # 4. Cross-Encoder Reranking
-        if enable_rerank:
-            pairs = [[query, cand["text"]] for cand in merged_candidates]
-            rerank_scores = self.reranker_model.predict(pairs)
-            
-            for idx, score in enumerate(rerank_scores):
-                merged_candidates[idx]["rerank_score"] = float(score)
-                
-            final_ranking = sorted(merged_candidates, key=lambda x: x["rerank_score"], reverse=True)
-        else:
-            for cand in merged_candidates:
-                cand["rerank_score"] = cand["rrf_score"]
-            final_ranking = merged_candidates
+        # 4. Cross-Encoder Reranking (Removed to save RAM - Relying on RRF Fusion)
+        for cand in merged_candidates:
+            cand["rerank_score"] = cand["rrf_score"]
+        final_ranking = merged_candidates
             
         return final_ranking[:top_k]
 

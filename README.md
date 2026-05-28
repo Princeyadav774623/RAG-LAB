@@ -36,9 +36,11 @@ The pipeline consists of two distinct workflows: the **Offline Ingestion & Index
 
 ## 🌟 Key Technical Highlights
 
-1. **Hybrid Retrieval (Dense + Sparse)**: Combines semantic embeddings (ChromaDB + SentenceTransformers `all-MiniLM-L6-v2`) with lexical matches (`BM25Okapi`), ensuring that exact terms, codes, and conceptual semantics are captured.
-2. **Reciprocal Rank Fusion (RRF)**: Leverages the reciprocal positions of search candidates across dense and sparse algorithms to unify rankings.
-3. **Cross-Encoder Reranking**: Uses `cross-encoder/ms-marco-MiniLM-L-6-v2` locally to grade candidate text-segments directly against the user query, resolving the limitation where standard vector distances retrieve out-of-context paragraphs.
+1. **Zero-RAM Cloud Architecture (Gemini Embeddings)**: We transitioned from using local `BAAI/bge` embedding models to the Google Gemini API (`text-embedding-004`). 
+   - **Why not BAAI?** Local models like BAAI require over 1GB of RAM to load into memory. When deploying to free-tier cloud platforms like Render (which limits RAM to 512MB), local models crash the server instantly with an Out Of Memory (OOM) error.
+   - **Why Gemini API?** Offloading the mathematical vector generation to Google's supercomputers allows our web server to use less than 100MB of RAM, making it infinitely scalable and completely free to host.
+2. **Hybrid Retrieval (Dense + Sparse)**: Combines semantic embeddings (Pinecone) with lexical matches (Supabase Full-Text Search), ensuring that exact terms, codes, and conceptual semantics are captured.
+3. **Reciprocal Rank Fusion (RRF)**: Leverages the reciprocal positions of search candidates across dense and sparse algorithms to unify rankings.
 4. **Citations & Anti-Hallucination**: The LLM prompt is structurally engineered to force grounded statements. Citations are extracted and highlighted as badge links in the UI, pointing to the exact page and document name.
 5. **Standalone Evaluation suite**: Evaluates system answers instantly using an LLM-as-a-judge method, grading Groundedness, Context Relevance, and Answer Relevance (0.0 to 1.0) with detailed reasoning.
 
