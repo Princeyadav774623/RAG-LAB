@@ -29,7 +29,7 @@ export default function FileUploader({ onUploadSuccess }: FileUploaderProps) {
     setStatus('Uploading & indexing...');
 
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const res = await fetch('/upload', { method: 'POST', body: formData });
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.detail || 'Upload failed');

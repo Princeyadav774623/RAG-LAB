@@ -43,21 +43,21 @@ export default function HomePage() {
 
   async function fetchStats() {
     try {
-      const res = await fetch('/api/status');
+      const res = await fetch('/status');
       if (res.ok) { const data = await res.json(); setStats(data.stats); }
     } catch { /* backend not running locally */ }
   }
 
   async function checkHealth() {
     try {
-      const res = await fetch('http://localhost:8000/health');
+      const res = await fetch('/health');
       setIsOnline(res.ok);
     } catch { setIsOnline(true); } // default online for Render
   }
 
   async function clearDatabase() {
     if (!confirm('Wipe all indexed documents? This cannot be undone.')) return;
-    await fetch('/api/status', { method: 'POST' });
+    await fetch('/clear', { method: 'POST' });
     fetchStats();
   }
 

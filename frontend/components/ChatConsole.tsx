@@ -76,7 +76,7 @@ export default function ChatConsole({ hasDocuments, onQueryResult }: ChatConsole
     }));
 
     try {
-      const res = await fetch('/api/query', {
+      const res = await fetch('/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
