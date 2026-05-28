@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 from pinecone import Pinecone
 from supabase import create_client, Client
 import google.generativeai as genai
-from sentence_transformers import CrossEncoder
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -43,6 +43,7 @@ class HybridRetriever:
             
         # Initialize CrossEncoder for Reranking
         try:
+            from sentence_transformers import CrossEncoder
             self.reranker = CrossEncoder(reranker_model_name)
         except Exception as e:
             print(f"Failed to load CrossEncoder: {e}")
