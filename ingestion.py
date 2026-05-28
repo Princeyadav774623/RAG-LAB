@@ -191,7 +191,7 @@ class DocumentIngester:
         # Generate embeddings via Gemini API
         try:
             embed_response = genai.embed_content(
-                model="models/text-embedding-004",
+                model="models/embedding-001",
                 content=texts
             )
             embeddings = embed_response['embedding']
