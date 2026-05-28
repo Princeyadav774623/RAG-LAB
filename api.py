@@ -29,19 +29,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files folder
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/", response_class=HTMLResponse)
-def read_root():
-    """
-    Serves the premium Apple.com-style UI frontend.
-    """
-    index_path = os.path.join("static", "index.html")
-    if os.path.exists(index_path):
-        with open(index_path, "r", encoding="utf-8") as f:
-            return f.read()
-    return "<h1>RAG OS Apple Frontend index.html not found! Check directory paths.</h1>"
 
 # Initialize core pipeline modules
 ingester = DocumentIngester()
@@ -231,6 +219,11 @@ def execute_query(request: QueryRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to execute Q&A query: {str(e)}")
+
+# Mount the built Next.js static files at the root
+# MUST be defined after all other API routes so it doesn't intercept them
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 def start(port: int = 8000):
     """

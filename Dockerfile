@@ -1,14 +1,28 @@
+# ==========================================
+# Stage 1: Build the Next.js Frontend
+# ==========================================
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app/frontend
+
+# Install dependencies
+COPY frontend/package*.json ./
+RUN npm ci
+
+# Copy frontend source and build static export
+COPY frontend/ ./
+RUN npm run build
+
+# ==========================================
+# Stage 2: Build the FastAPI Backend
+# ==========================================
 FROM python:3.11-slim
 
-# Set working directory
 WORKDIR /app
 
-# Set environment variables to avoid python generating .pyc and buffering stdout
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies
-# gcc/g++ are often needed for compiling some python ML/database packages like psycopg2 or sentence-transformers
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
@@ -19,14 +33,14 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Copy backend application
 COPY . .
 
-# Expose port
-EXPOSE 8000
+# Copy the built static frontend from Stage 1 into the backend's static folder
+RUN rm -rf static && mkdir -p static
+COPY --from=frontend-builder /app/frontend/out/ ./static/
 
-# Make the start script executable
+EXPOSE 8000
 RUN chmod +x start.sh
 
-# Run the startup script
 CMD ["./start.sh"]
