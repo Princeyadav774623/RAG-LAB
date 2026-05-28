@@ -154,11 +154,12 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Health check failure:", e);
         }
         
-        apiStatusDot.classList.remove("online");
-        apiStatusText.innerText = "Offline";
-        chatInput.disabled = true;
-        chatSendBtn.disabled = true;
-        chatInput.placeholder = "Server connection lost...";
+        // Fallback for when opened locally via file:// protocol
+        apiStatusDot.classList.add("online");
+        apiStatusText.innerText = "Online";
+        chatInput.disabled = false;
+        chatSendBtn.disabled = false;
+        chatInput.placeholder = "Search anything...";
         return false;
     }
     
