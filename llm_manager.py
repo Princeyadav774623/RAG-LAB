@@ -50,9 +50,10 @@ class LLMManager:
             # Re-check environment if empty strings were passed
             self.__init__()
 
-    def generate_answer(self, query: str, retrieved_chunks: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def generate_answer(self, query: str, retrieved_chunks: List[Dict[str, Any]], chat_history: Optional[List[Dict[str, str]]] = None) -> Dict[str, Any]:
         """
         Formats the context, constructs the citation-oriented prompt, and calls the selected LLM.
+        Optionally accepts chat_history: a list of {"role": "user"|"assistant", "content": "..."} dicts.
         """
         if not retrieved_chunks:
             return {
@@ -77,6 +78,17 @@ class LLMManager:
             
         context_str = "\n\n".join(context_str_list)
         
+        # Build conversation history string for multi-turn memory
+        history_str = ""
+        if chat_history:
+            # Only keep last 5 turns to stay within token limits
+            recent_history = chat_history[-10:]  # 5 user + 5 assistant turns
+            history_lines = []
+            for msg in recent_history:
+                role = "User" if msg["role"] == "user" else "Assistant"
+                history_lines.append(f"{role}: {msg['content']}")
+            history_str = "\n--- CONVERSATION HISTORY ---\n" + "\n".join(history_lines) + "\n--- END HISTORY ---\n\n"
+        
         # Build prompt enforcing citation rules
         system_instructions = (
             "You are an expert, professional, and precise AI assistant answering questions about user-uploaded documents.\n\n"
@@ -84,15 +96,17 @@ class LLMManager:
             "1. Answer the user's question based strictly and ONLY on the provided document context. Do not make up facts, hallucinate, or bring in external knowledge.\n"
             "2. If the answer cannot be found in the provided context, state EXACTLY: 'I do not have enough information in the provided documents to answer this question.' Do not attempt to answer anyway.\n"
             "3. For every claim, fact, or statement you make that is derived from the context, you MUST append an inline citation referencing the document and page in the exact format: [Source: filename, page X]. Example: 'The fiscal year 2025 revenue grew by 15% [Source: financial_report.pdf, page 4].'\n"
-            "4. Keep your answer professional, concise, structured, and easy to read. Use Markdown lists or tables where appropriate."
+            "4. Keep your answer professional, concise, structured, and easy to read. Use Markdown lists or tables where appropriate.\n"
+            "5. If the conversation history contains relevant prior context, use it to understand follow-up questions (e.g. 'it', 'that', 'this' refer to prior topics)."
         )
         
         prompt = (
             f"{system_instructions}\n\n"
+            f"{history_str}"
             f"--- START RETRIEVED CONTEXT ---\n"
             f"{context_str}\n"
             f"--- END RETRIEVED CONTEXT ---\n\n"
-            f"User Question: {query}\n\n"
+            f"Current User Question: {query}\n\n"
             f"Provide your answer below, ensuring strict adherence to the rules above:"
         )
         

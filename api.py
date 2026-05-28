@@ -60,6 +60,7 @@ class QueryRequest(BaseModel):
     enable_rerank: bool = True
     gemini_key: Optional[str] = None
     openai_key: Optional[str] = None
+    chat_history: Optional[List[dict]] = None  # List of {"role": "user"|"assistant", "content": str}
 
 class QueryResponse(BaseModel):
     query: str
@@ -203,10 +204,11 @@ def execute_query(request: QueryRequest):
                 provider=llm.provider
             )
             
-        # 2. LLM response generation
+        # 2. LLM response generation (with conversation memory)
         generation_results = llm.generate_answer(
             query=request.query,
-            retrieved_chunks=retrieved_chunks
+            retrieved_chunks=retrieved_chunks,
+            chat_history=request.chat_history
         )
         
         answer = generation_results["answer"]

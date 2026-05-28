@@ -1,9 +1,9 @@
 import os
 from typing import List, Dict, Any
-import numpy as np
 from pinecone import Pinecone
 from supabase import create_client, Client
 import google.generativeai as genai
+from sentence_transformers import CrossEncoder
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -40,6 +40,13 @@ class HybridRetriever:
             genai.configure(api_key=gemini_key)
         else:
             print("WARNING: GEMINI_API_KEY not set for embeddings")
+            
+        # Initialize CrossEncoder for Reranking
+        try:
+            self.reranker = CrossEncoder(reranker_model_name)
+        except Exception as e:
+            print(f"Failed to load CrossEncoder: {e}")
+            self.reranker = None
 
     def retrieve(
         self, 
@@ -83,7 +90,7 @@ class HybridRetriever:
         try:
             # text_search maps to Postgres plainto_tsquery or to_tsquery
             # WebSearch provides better handling of generic queries in Supabase
-            response = self.supabase.table("documents").select("*").text_search("content", query, config="english").limit(20).execute()
+            response = self.supabase.table("documents").select("*").text_search("content", query).limit(20).execute()
             for rank, row in enumerate(response.data):
                 sparse_ranking.append({
                     "id": row["id"],
@@ -100,11 +107,12 @@ class HybridRetriever:
             
         # Helper to fetch missing texts from Supabase for dense-only results
         def fetch_texts_for_ids(ids: List[str]) -> Dict[str, str]:
-            if not ids: return {}
+            if not ids:
+                return {}
             try:
                 res = self.supabase.table("documents").select("id, content").in_("id", ids).execute()
                 return {row["id"]: row["content"] for row in res.data}
-            except:
+            except Exception:
                 return {}
                 
         # 3. Reciprocal Rank Fusion (RRF)
@@ -152,10 +160,23 @@ class HybridRetriever:
         if not merged_candidates:
             return []
             
-        # 4. Cross-Encoder Reranking (Removed to save RAM - Relying on RRF Fusion)
-        for cand in merged_candidates:
-            cand["rerank_score"] = cand["rrf_score"]
-        final_ranking = merged_candidates
+        # 4. Cross-Encoder Reranking
+        if enable_rerank and getattr(self, "reranker", None):
+            cross_inp = [[query, cand["text"]] for cand in merged_candidates]
+            try:
+                cross_scores = self.reranker.predict(cross_inp)
+                for idx, cand in enumerate(merged_candidates):
+                    cand["rerank_score"] = float(cross_scores[idx])
+                final_ranking = sorted(merged_candidates, key=lambda x: x["rerank_score"], reverse=True)
+            except Exception as e:
+                print(f"Reranking error: {e}")
+                for cand in merged_candidates:
+                    cand["rerank_score"] = cand["rrf_score"]
+                final_ranking = merged_candidates
+        else:
+            for cand in merged_candidates:
+                cand["rerank_score"] = cand["rrf_score"]
+            final_ranking = merged_candidates
             
         return final_ranking[:top_k]
 

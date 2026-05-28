@@ -1,0 +1,57 @@
+/* FileUploader.module.css — Light Theme */
+.wrapper { display: flex; flex-direction: column; gap: 8px; }
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 20px;
+  border: 2px dashed rgba(0,0,0,0.15);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f8f8f8;
+  text-align: center;
+}
+
+.dropzone:hover, .dragging {
+  border-color: #3e3ef4;
+  background: #eeefff;
+}
+
+.uploading { opacity: 0.7; pointer-events: none; }
+
+.icon {
+  width: 44px; height: 44px;
+  color: #3e3ef4;
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.icon svg { width: 100%; height: 100%; }
+
+.spinner {
+  width: 24px; height: 24px;
+  border: 3px solid rgba(62,62,244,0.2);
+  border-top-color: #3e3ef4;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.label { font-size: 14px; font-weight: 500; color: #111; }
+.sub { font-size: 12px; color: #666; }
+
+.statusMsg {
+  font-size: 13px;
+  text-align: center;
+  color: #10b981;
+  font-weight: 500;
+  padding: 4px 0;
+}

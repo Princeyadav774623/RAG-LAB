@@ -1,0 +1,71 @@
+/* EvalGauges.module.css — Light Theme */
+.placeholder {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+  font-size: 14px;
+}
+
+.gaugesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 16px;
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 16px;
+}
+
+.svgWrap {
+  position: relative;
+  width: 70px; height: 70px;
+}
+
+.svgWrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.ringBg {
+  fill: none;
+  stroke: #e5e5e5;
+  stroke-width: 8;
+}
+
+.ringFill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.score {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.gaugeLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #111;
+  text-align: center;
+}
+
+.gaugeExp {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
