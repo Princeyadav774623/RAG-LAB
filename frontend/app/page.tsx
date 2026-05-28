@@ -37,7 +37,8 @@ export default function HomePage() {
 
   useEffect(() => {
     const onScroll = () => setNavScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll);
+    onScroll(); // initialize on mount
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
