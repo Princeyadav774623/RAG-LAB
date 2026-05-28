@@ -74,7 +74,7 @@ export default function HomePage() {
 
         {/* ── FLOATING PILL NAVBAR ── */}
         <div className={styles.headerWrapper}>
-          <header className={styles.navContainer}>
+          <header className={`${styles.navContainer} ${navScrolled ? styles.navScrolled : ''}`}>
             <div className={styles.navBgBlur} />
             <div className={styles.navBgShadow} />
             <div className={styles.navInner}>
