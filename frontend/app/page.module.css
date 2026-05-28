@@ -31,9 +31,9 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(19.35px);
-  -webkit-backdrop-filter: blur(19.35px);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 .navBgShadow {
@@ -90,11 +90,11 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: rgba(255,255,255,0.9);
+  color: rgba(0,0,0,0.8);
   padding: 5px 12px;
   border-radius: 99px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
 }
 .statusDot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .online { background: #22c55e; box-shadow: 0 0 6px #22c55e; animation: blink 2s infinite; }
