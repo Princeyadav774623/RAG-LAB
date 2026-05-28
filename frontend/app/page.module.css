@@ -31,19 +31,15 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(48px) saturate(200%);
-  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  background: rgba(255, 255, 255, 1);
   transition: all 0.4s ease;
 }
 
 .navScrolled {
-  box-shadow: 0 12px 32px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
 .navScrolled .navBgBlur {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(48px) saturate(200%);
-  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  background: rgba(255, 255, 255, 1);
 }
 
 .navBgShadow {
@@ -52,14 +48,12 @@
   inset: 0;
   z-index: 12;
   border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 
-              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.4s ease;
 }
 
 .navScrolled .navBgShadow {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 
-              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 .navInner {
@@ -841,3 +835,15 @@
 }
 
 .footerCopy { color: #444; font-size: 14px; font-weight: 500; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVENESS (MOBILE STYLES)
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .navLinks {
+    display: none; /* Hide middle links on mobile to prevent overlap */
+  }
+  .navInner {
+    padding: 16px 20px;
+  }
+}
