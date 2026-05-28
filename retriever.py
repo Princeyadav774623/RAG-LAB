@@ -54,8 +54,9 @@ class HybridRetriever:
         # 1. Dense Semantic Search (Pinecone) via Gemini API
         try:
             embed_response = genai.embed_content(
-                model="models/embedding-001",
-                content=query
+                model="models/gemini-embedding-2",
+                content=query,
+                output_dimensionality=768
             )
             query_embedding = embed_response['embedding']
         except Exception as e:
