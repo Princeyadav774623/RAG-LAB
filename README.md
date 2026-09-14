@@ -1,156 +1,143 @@
-# 🚀 Production-Grade RAG Document Q&A Portfolio System
+# RAG Lab
 
-An enterprise-grade, evaluation-first **Retrieval-Augmented Generation (RAG)** pipeline designed for multi-format document Q&A. This system moves away from basic "vibe-based" AI development by implementing **Hybrid Multi-Stage Retrieval**, **Cross-Encoder Reranking**, **Strict Citation Grounding**, and a **Self-Contained LLM-as-a-Judge Evaluation Suite** that measures Faithfulness, Context Relevance, and Answer Relevance in real-time.
+Production document question answering — hybrid retrieval, cross-encoder reranking, and an
+evaluation loop that scores every answer against the context it was built from.
 
-Features a beautiful, highly interactive **Streamlit Dashboard** and a production-ready **FastAPI REST API**.
-
----
-
-## 🛠️ System Architecture
-
-The pipeline consists of two distinct workflows: the **Offline Ingestion & Indexing Pipeline** and the **Online Query, Rerank, & Evaluation Pipeline**.
-
-### 1. Ingestion Pipeline (Offline)
-```
-[Raw PDFs / TXT] ──> [Recursive Parser (Page Tracking)] ──> [Overlapping Recursive Chunking]
-                                                                      │
-                                                                      ▼
-[ChromaDB Vector Store] <── [Local dense embeddings (all-MiniLM-L6)] ─┘
-```
-
-### 2. Query, Reranking & Evaluation Pipeline (Online)
-```
-[User Question] 
-       │
-       ├─► [Dense Semantic Search] ──► Query ChromaDB (Top 20 Matches) ──┐
-       │                                                                 ▼
-       └─► [Sparse Keyword Search] ──► Local BM25 Index (Top 20 Matches) ─┼─► [Reciprocal Rank Fusion (RRF)]
-                                                                         │                │
-[User Answer] <── [LLM Generation with Citations] <── [Cross-Encoder Reranker] <─────────┘
-      │                                                (ms-marco-MiniLM-L-6-v2)
-      ▼
-[Automated Evaluation Suite] (LLM-as-a-Judge) ──► Faithfulness, Context & Answer Relevance Metrics
-```
+![Architecture](docs/architecture.png)
 
 ---
 
-## 🌟 Key Technical Highlights
+## Why this exists
 
-1. **Zero-RAM Cloud Architecture (Gemini Embeddings)**: We transitioned from using local `BAAI/bge` embedding models to the Google Gemini API (`text-embedding-004`). 
-   - **Why not BAAI?** Local models like BAAI require over 1GB of RAM to load into memory. When deploying to free-tier cloud platforms like Render (which limits RAM to 512MB), local models crash the server instantly with an Out Of Memory (OOM) error.
-   - **Why Gemini API?** Offloading the mathematical vector generation to Google's supercomputers allows our web server to use less than 100MB of RAM, making it infinitely scalable and completely free to host.
-2. **Hybrid Retrieval (Dense + Sparse)**: Combines semantic embeddings (Pinecone) with lexical matches (Supabase Full-Text Search), ensuring that exact terms, codes, and conceptual semantics are captured.
-3. **Reciprocal Rank Fusion (RRF)**: Leverages the reciprocal positions of search candidates across dense and sparse algorithms to unify rankings.
-4. **Citations & Anti-Hallucination**: The LLM prompt is structurally engineered to force grounded statements. Citations are extracted and highlighted as badge links in the UI, pointing to the exact page and document name.
-5. **Standalone Evaluation suite**: Evaluates system answers instantly using an LLM-as-a-judge method, grading Groundedness, Context Relevance, and Answer Relevance (0.0 to 1.0) with detailed reasoning.
+A retrieval system will always return something. Ask it a question and it hands back passages
+ranked by similarity, and a language model turns those passages into fluent prose. Nothing in
+that pipeline tells you whether the answer was *earned* — whether it came from the documents
+or from the model's own priors.
 
----
+RAG Lab closes that gap in two places:
 
-## 📁 Repository Directory Structure
+- **Retrieval is hybrid, not semantic-only.** Dense vector search finds passages that *mean* the
+  same thing; sparse full-text search catches exact terms, product codes and names that
+  embeddings routinely miss. Their rankings are merged with Reciprocal Rank Fusion, which needs
+  no tuned weight between the two, then reordered by a cross-encoder that reads each candidate
+  against the question directly.
+- **Every answer is graded.** A second model scores the response for groundedness, context
+  relevance and answer relevance on a 0.0–1.0 scale and writes down its reasoning. The scores
+  come back with the answer, not in a separate offline report.
 
-*   `app.py`: Premium interactive visual Streamlit dashboard.
-*   `api.py`: Production FastAPI REST server exposing indexing, Q&A, and health endpoints.
-*   `ingestion.py`: Document loading, page-aware recursive chunk splitters, and local ChromaDB integrations.
-*   `retriever.py`: Hybrid search, RRF scoring, and local Cross-Encoder reranker.
-*   `llm_manager.py`: Connects Gemini & OpenAI APIs, handles generation prompts, and provides an offline fallback demo mode.
-*   `evaluator.py`: Real-time RAG metric scoring system.
-*   `main.py`: Command Line Interface launcher.
-*   `verify_rag.py`: Automated end-to-end integration testing suite.
-*   `requirements.txt`: Python package dependencies.
-*   `.env`: Local environment configuration keys.
+## Pipeline
 
----
+| Stage | What happens | Implementation |
+|---|---|---|
+| **Ingest** | Parse PDF/TXT page by page, split into passages with page metadata preserved | `ingestion.py` · pypdf · recursive splitter |
+| **Embed** | Vectorise through a cloud API so the server never loads an embedding model | `genai.embed_content` · `gemini-embedding-2` · 768-dim |
+| **Index** | Vectors to Pinecone, text to Supabase full-text | `ingestion.py` |
+| **Retrieve** | Dense and sparse search in parallel, fused by RRF | `retriever.py` · Pinecone + Supabase/BM25 |
+| **Rerank** | Cross-encoder reorders candidates by true relevance | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
+| **Generate** | Answer strictly from retrieved passages, with citations enforced by the prompt | `llm_manager.py` · Gemini / GPT-4o |
+| **Judge** | Score the answer against its own retrieved context | `evaluator.py` |
 
-## 🚀 Installation & Setup
+### The memory constraint
 
-Ensure you have **Python 3.10 to 3.13** installed.
+The embedding step is the reason this deploys at all. A local `BAAI/bge-base-en-v1.5` needs
+over 1 GB of RAM to load, which kills the process instantly on a 512 MB free tier. Moving
+embedding to the Gemini API drops the server's footprint below 100 MB — the vector maths happens
+on Google's hardware, and the web process only ever holds text and HTTP.
 
-### 1. Clone & Navigate
+That single decision is what makes the difference between a system that runs on a laptop and
+one that runs in production for free.
+
+## Quickstart
+
 ```bash
-cd /Users/princeyadav/Documents/RAG_full
-```
-
-### 2. Configure Virtual Environment & Packages
-```bash
-# Create virtual environment
-python3 -m venv .venv
-
-# Activate environment
-source .venv/bin/activate
-
-# Install dependencies
+git clone https://github.com/Princeyadav774623/RAG-LAB.git
+cd RAG-LAB
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env          # then fill in the keys below
+uvicorn api:app --reload --port 8000
 ```
 
-### 3. Add API Credentials
-Create or edit the `.env` file in the root directory:
-```env
-GEMINI_API_KEY=your_google_gemini_api_key
-OPENAI_API_KEY=your_openai_api_key
-```
-*Note: If no API key is specified, the system will seamlessly fall back to **Offline Demo Mode**, permitting you to upload documents, perform hybrid search, run rerankers, and inspect metrics locally without charging any tokens.*
+The API is then at `http://localhost:8000`. `main.py` runs the same pipeline from the terminal,
+and `static/index.html` is a dependency-free console that talks to the running API.
 
----
+### Next.js frontend
 
-## 🕹️ How to Run
-
-Activate the virtual environment first (`source .venv/bin/activate`).
-
-### Run Streamlit Dashboard UI
 ```bash
-python main.py --ui
+cd frontend
+npm install
+npm run dev
 ```
-*   **Default Port**: `8501`
-*   **Usage**: Drag and drop PDF or TXT documents under the "Ingestion Manager" tab, adjust chunk sizes, and start chatting. Inspect vector retrieval rankings and judge critiques in the right sidebar.
 
-### Run FastAPI REST Service
-```bash
-python main.py --api
+Next.js 16 / React 19 / TypeScript, with a chat console, an upload panel and live evaluation
+gauges.
+
+## Configuration
+
+All five are required. Copy `.env.example` to `.env` and fill it in.
+
+| Variable | Used for |
+|---|---|
+| `GEMINI_API_KEY` | Embeddings and generation |
+| `OPENAI_API_KEY` | Alternative generation provider |
+| `PINECONE_API_KEY` | Dense vector index |
+| `SUPABASE_URL` | Text store and full-text search |
+| `SUPABASE_KEY` | Text store and full-text search |
+
+Run `init_db.sql` against your Supabase project once to create the tables and the full-text index.
+
+## API
+
+| Method | Route | Purpose |
+|---|---|---|
+| `POST` | `/query` | Ask a question. Returns the answer, its citations and its evaluation scores |
+| `POST` | `/upload` | Ingest a document into both indexes |
+| `POST` | `/clear` | Empty the indexes |
+| `GET` | `/status` | Index state and document count |
+| `GET` | `/health` | Liveness check |
+
+## Project structure
+
 ```
-*   **Default Port**: `8000`
-*   **Documentation Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
-*   **Endpoints**:
-    *   `POST /upload`: accepts multi-part file uploads.
-    *   `POST /query`: runs Q&A + evaluation.
-    *   `GET /status`: reports DB stats.
-    *   `POST /clear`: wipes DB collection.
+api.py            FastAPI application and routes
+ingestion.py      Parsing, chunking, embedding, indexing
+retriever.py      Hybrid search, RRF, cross-encoder reranking
+llm_manager.py    Provider clients, prompt construction, citation mapping
+evaluator.py      LLM-as-a-judge scoring
+main.py           Command-line entry point
+verify_rag.py     End-to-end integration test
+init_db.sql       Supabase schema and full-text index
+frontend/         Next.js 16 + React 19 + TypeScript interface
+static/           Dependency-free HTML/JS console
+```
 
----
+## Evaluation
 
-## 🧪 Automated Testing
-
-We provide a self-contained integration test that spins up a mock vector index, ingests sample pages, searches queries, generates citation answers, and measures evaluation accuracy:
+`verify_rag.py` runs the whole path end to end — ingests sample pages, searches, generates a
+cited answer, and scores it. On its sample corpus it reports groundedness 0.95, context
+relevance 0.90 and answer relevance 0.95.
 
 ```bash
 python verify_rag.py
 ```
 
-### Successful Test Output Example:
-```text
-[*] Starting RAG End-to-End Pipeline Integration Verification...
-[*] Initializing components...
-[+] Created sample testing file: ./sample_antigravity_doc.txt
-[*] Loading and parsing document...
-[*] Chunking document...
-[+] Created 6 chunks.
-[*] Indexing chunks into local ChromaDB with embeddings...
-[+] Successfully indexed 6 chunks.
-[*] Querying Hybrid Search Retriever: 'Who designed Antigravity?'
-[+] Retrieved 2 relevant chunks:
-  Rank 1: sample_antigravity_doc.txt | Page 1 | CE Score: 8.2870 | RRF Score: 0.0328
-  Rank 2: sample_antigravity_doc.txt | Page 1 | CE Score: -1.1990 | RRF Score: 0.0161
-[*] Requesting LLM answer generation with inline citations...
-[+] LLM Response:
---- ANSWER ---
-We found matching details in the file sample_antigravity_doc.txt on page 1. The text segment discusses that Antigravity is an advanced agentic AI coding assistant designed by the Google DeepMind team [Source: sample_antigravity_doc.txt, page 1].
---------------
-[+] Parsed Citations: ['sample_antigravity_doc.txt (Page 1)']
-[*] Running LLM-as-a-judge automated pipeline evaluation...
-[+] Evaluation Suite Scores:
-  - Faithfulness (Groundedness): 0.95
-  - Context Relevance: 0.90
-  - Answer Relevance: 0.95
-  - Combined RAG score: 0.93
+## Deployment
 
-[+] SUCCESS: All stages of the production RAG pipeline integrated and verified successfully!
-```
+`render.yaml` defines a Docker web service on Render's free tier. `start.sh` runs uvicorn with
+two workers. The five environment variables above must be set in the Render dashboard.
+
+## Limitations
+
+Worth stating plainly:
+
+- **Evaluation is model-graded, not human-labelled.** The scores measure self-consistency
+  between answer and retrieved context. They are a useful regression signal, not ground truth.
+- **The reported scores come from a sample corpus**, not a held-out benchmark.
+- **Free-tier cold starts.** The Render instance sleeps when idle; the first request after a
+  sleep is slow.
+- **`chroma_db/` is local-development only.** Production retrieval runs on Pinecone and Supabase.
+- Chunking is tuned for prose. Tables and multi-column PDFs are extracted, but not well.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
