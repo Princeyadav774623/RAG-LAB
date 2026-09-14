@@ -44,3 +44,10 @@ temp_uploads/
 
 # Local vector store (development only; production uses Pinecone)
 chroma_db/
+
+# Local vector store (development only)
+chroma_db/
+
+# Node
+node_modules/
+.next/
